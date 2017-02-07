@@ -24,8 +24,11 @@ public class MandelBrot
 	    {
 		    System.out.println("Error in arguments" + e);
 		    System.out.println("Usage: java MandelBrot <CornerX> <CornerY> <Size> <SizePixels> <MinBox>");
+		    
 	    }
+	    System.out.println("Number of active threads from the given thread: " + Thread.activeCount());
 
     }
+    
 }
 

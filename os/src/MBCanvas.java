@@ -6,7 +6,7 @@ import java.awt.*;
  *
  * ----------------------------------------------------------*/
 
-public class MBCanvas extends Canvas implements Runnable
+public class MBCanvas extends Canvas// implements Runnable
 {
    private MBGlobals mg;   // reference to global definitions
 
@@ -24,7 +24,9 @@ public class MBCanvas extends Canvas implements Runnable
 
 	  /* Call method to add MandelBrot pattern */
 	  /* Run MBCompute in this thread */
-	run();
+	Rectangle nrect = new Rectangle(0,0,mg.pixeldim,mg.pixeldim);
+	findRectangles(nrect);
+	
 	
    }
 
@@ -32,7 +34,7 @@ public class MBCanvas extends Canvas implements Runnable
    {
       MBPaint mbp;
       Rectangle nrect;
-
+     
       // Compute the maximum pixel values for hor (i) and vert (j) 
       int maxi = mrect.x + mrect.width;
       int maxj = mrect.y + mrect.height;
@@ -69,11 +71,11 @@ public class MBCanvas extends Canvas implements Runnable
       findRectangles(nrect); // Note executing recursive call
    }
 
-@Override
-public void run() {
+//@Override
+//public void run() {
+
 	// TODO Auto-generated method stub
-	Rectangle nrect = new Rectangle(0,0,mg.pixeldim,mg.pixeldim);
-	findRectangles(nrect);
-}
+	
+//}
 
 }
