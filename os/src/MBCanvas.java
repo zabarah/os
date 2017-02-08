@@ -1,4 +1,6 @@
-import java.awt.*;     
+import java.awt.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;     
 
 /*-----------------------------------------------------------
  *
@@ -6,7 +8,7 @@ import java.awt.*;
  *
  * ----------------------------------------------------------*/
 
-public class MBCanvas extends Canvas// implements Runnable
+public class MBCanvas extends Canvas
 {
    private MBGlobals mg;   // reference to global definitions
 
@@ -18,6 +20,7 @@ public class MBCanvas extends Canvas// implements Runnable
 
    public void paint(Graphics g)  // this method paints the canvas
    {
+
 	   /* reset screen to blank */
         g.setColor(Color.white);
 	g.fillRect(0,0,mg.pixeldim, mg.pixeldim);
@@ -28,11 +31,14 @@ public class MBCanvas extends Canvas// implements Runnable
 	findRectangles(nrect);
 	
 	
+	
+	
+	
    }
 
    private void findRectangles(Rectangle mrect)
    {
-      MBPaint mbp;
+     //MBPaint mbp;
       Rectangle nrect;
      
       // Compute the maximum pixel values for hor (i) and vert (j) 
@@ -43,8 +49,13 @@ public class MBCanvas extends Canvas// implements Runnable
       if( (maxi - mrect.x) <= mg.minBoxSize)  
       {
             // Can now do the painting
-	    mbp = new MBPaint(this, mg, mrect);
-	    mbp.run();
+    	 //Thread thread = new Thread(new MBPaint(this, mg, mrect)); // Part B
+    	 //thread.start();
+     	 System.out.println("Number of active threads from the given thread: " + Thread.activeCount());
+     	ExecutorService thpool = Executors.newFixedThreadPool(20); //Part C
+    	thpool.execute(new MBPaint(this, mg, mrect));
+    	 //mbp = new MBPaint(this, mg, mrect);
+	    //mbp.run();
 	    return;
       }
 
@@ -70,12 +81,5 @@ public class MBCanvas extends Canvas// implements Runnable
       nrect = new Rectangle(mrect.x+midw, mrect.y+midh, midw+wover, midh+hover);
       findRectangles(nrect); // Note executing recursive call
    }
-
-//@Override
-//public void run() {
-
-	// TODO Auto-generated method stub
-	
-//}
 
 }
