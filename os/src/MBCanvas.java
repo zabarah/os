@@ -38,7 +38,7 @@ public class MBCanvas extends Canvas
 
    private void findRectangles(Rectangle mrect)
    {
-     //MBPaint mbp;
+     //MBPaint mbp; //old code
       Rectangle nrect;
      
       // Compute the maximum pixel values for hor (i) and vert (j) 
@@ -48,13 +48,13 @@ public class MBCanvas extends Canvas
       // Only when the square is small enough do we fill
       if( (maxi - mrect.x) <= mg.minBoxSize)  
       {
-            // Can now do the painting
+          // Can now do the painting
     	 //Thread thread = new Thread(new MBPaint(this, mg, mrect)); // Part B
     	 //thread.start();
      	 System.out.println("Number of active threads from the given thread: " + Thread.activeCount());
      	ExecutorService thpool = Executors.newFixedThreadPool(20); //Part C
     	thpool.execute(new MBPaint(this, mg, mrect));
-    	 //mbp = new MBPaint(this, mg, mrect);
+    	 //mbp = new MBPaint(this, mg, mrect); //Old Code
 	    //mbp.run();
 	    return;
       }
