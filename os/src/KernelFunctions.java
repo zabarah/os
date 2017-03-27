@@ -1,4 +1,4 @@
-
+import java.util.ArrayList;
 
 public class KernelFunctions
 {
@@ -54,6 +54,7 @@ public class KernelFunctions
 	// Calls to Replacement algorithm
 	public static void pageReplAlgorithm(int vpage, Process prc, Kernel krn)
 	{
+		
 	     boolean doingCount = false;
 	     switch(krn.pagingAlgorithm)
 	     {
@@ -74,12 +75,28 @@ public class KernelFunctions
 	// page replacement algorithms.
 	public static void doneMemAccess(int vpage, Process prc, double clock)
 	{
+		if(prc.pageTable[vpage].valid){
+		prc.pageTable[vpage].tmStamp=clock;
+		prc.pageTable[vpage].used=true;
+		prc.pageTable[vpage].count++;
+	
+		}
 	}
 
 	// FIFO page Replacement algorithm
 	public static void pageReplAlgorithmFIFO(int vpage, Process prc)
 	{
-	   // Page to be replaced
+		
+		
+		
+		int tmp=findvPage(prc.pageTable,prc.allocatedFrames[prc.framePtr]);
+		
+		prc.pageTable[tmp].frameNum=0;
+		prc.pageTable[vpage].frameNum=prc.allocatedFrames[prc.framePtr];
+		prc.pageTable[vpage].valid=true;
+		prc.pageTable[tmp].valid=false;
+		prc.framePtr = (prc.framePtr+1) % prc.numAllocatedFrames;
+		// Page to be replaced
 	   // frame to receive new page
 	   // Find page to be replaced
 	      // get next available frame
@@ -93,16 +110,95 @@ public class KernelFunctions
 	// CLOCK page Replacement algorithm
 	public static void pageReplAlgorithmCLOCK(int vpage, Process prc)
 	{
+		int clk=prc.framePtr;
+		while(clk!=prc.framePtr-1 && prc.pageTable[findvPage(prc.pageTable,prc.allocatedFrames[clk])].used!=false ){
+			prc.pageTable[findvPage(prc.pageTable,prc.allocatedFrames[clk])].used=false;
+			clk=(clk+1)%prc.numAllocatedFrames;
+			
+			
+		}
+		if (prc.pageTable[findvPage(prc.pageTable,prc.allocatedFrames[clk])].used==false ){
+			int tmp=findvPage(prc.pageTable,prc.allocatedFrames[clk]);
+			
+			prc.pageTable[tmp].frameNum=0;
+			prc.pageTable[vpage].frameNum=prc.allocatedFrames[clk];
+			prc.pageTable[vpage].valid=true;
+			prc.pageTable[tmp].valid=false;
+			prc.framePtr=(clk+1)%prc.numAllocatedFrames;
+
+		}
+		else{
+			int tmp=findvPage(prc.pageTable,prc.allocatedFrames[prc.framePtr]);
+			
+			prc.pageTable[tmp].frameNum=0;
+			prc.pageTable[vpage].frameNum=prc.allocatedFrames[prc.framePtr];
+			prc.pageTable[vpage].valid=true;
+			prc.pageTable[tmp].valid=false;
+			prc.framePtr = (prc.framePtr) % prc.numAllocatedFrames;
+			prc.pageTable[findvPage(prc.pageTable,prc.allocatedFrames[clk])].used=false;
+		}
+		
 	}
 
 	// LRU page Replacement algorithm
 	public static void pageReplAlgorithmLRU(int vpage, Process prc)
 	{
+		int tmp;
+		int page=0;
+		int frame=0;
+		double tmpclk=999999999; //to compare clock time
+		for (int i=0;i<prc.numAllocatedFrames;i++){
+			
+			
+			tmp=findvPage(prc.pageTable,prc.allocatedFrames[i]);
+			if (prc.pageTable[tmp].tmStamp<tmpclk){
+				
+				page=tmp;
+				frame=prc.allocatedFrames[i];
+				tmpclk=prc.pageTable[tmp].tmStamp;
+			}
+			
+		}
+		//frame to recieve new page
+		prc.pageTable[page].frameNum=0;
+		prc.pageTable[vpage].frameNum=frame;
+		prc.pageTable[vpage].valid=true;
+		prc.pageTable[page].valid=false;
+		
+		
 	}
 
 	// COUNT page Replacement algorithm
 	public static void pageReplAlgorithmCOUNT(int vpage, Process prc)
 	{
+		int tmp=0;
+		int page=0;
+		int frame=0; 
+		long count=999999999;//to compare count
+		double tmpclk=999999999;
+		
+		for (int i=0;i<prc.allocatedFrames.length;i++){
+
+
+			tmp=findvPage(prc.pageTable,prc.allocatedFrames[i]);
+
+			if (prc.pageTable[tmp].count<count||(prc.pageTable[tmp].count==count && prc.pageTable[tmp].tmStamp<tmpclk)){
+				page=tmp;
+				frame=prc.allocatedFrames[i];
+				count=prc.pageTable[tmp].count;
+				tmpclk=prc.pageTable[tmp].tmStamp;
+				
+			}
+			//prc.pageTable[tmp].count=0;
+			
+		}
+		//frame to recieve new page
+		prc.pageTable[page].frameNum=0;
+		prc.pageTable[vpage].frameNum=frame;
+		prc.pageTable[vpage].valid=true;
+		prc.pageTable[page].valid=false;
+		prc.pageTable[vpage].count=0;
+		prc.pageTable[page].count=0;
 	}
 
 	// finds the virtual page loaded in the specified frame fr
