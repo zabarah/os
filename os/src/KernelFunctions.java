@@ -76,10 +76,10 @@ public class KernelFunctions
 	public static void doneMemAccess(int vpage, Process prc, double clock)
 	{
 		if(prc.pageTable[vpage].valid){
-		prc.pageTable[vpage].tmStamp=clock;
-		prc.pageTable[vpage].used=true;
-		prc.pageTable[vpage].count++;
-	
+			prc.pageTable[vpage].tmStamp=clock;
+			prc.pageTable[vpage].used=true;
+			prc.pageTable[vpage].count++;
+
 		}
 	}
 
@@ -96,15 +96,7 @@ public class KernelFunctions
 		prc.pageTable[vpage].valid=true;
 		prc.pageTable[tmp].valid=false;
 		prc.framePtr = (prc.framePtr+1) % prc.numAllocatedFrames;
-		// Page to be replaced
-	   // frame to receive new page
-	   // Find page to be replaced
-	      // get next available frame
-	   // find current page using it (i.e written to disk)
-	    // Old page is replaced.
-	   // load page into the frame and update table
-	   // make the page valid
-	   // point to next frame in list
+	
 	}
 
 	// CLOCK page Replacement algorithm
@@ -134,7 +126,7 @@ public class KernelFunctions
 			prc.pageTable[vpage].frameNum=prc.allocatedFrames[prc.framePtr];
 			prc.pageTable[vpage].valid=true;
 			prc.pageTable[tmp].valid=false;
-			prc.framePtr = (prc.framePtr) % prc.numAllocatedFrames;
+			prc.framePtr = (prc.framePtr+1) % prc.numAllocatedFrames;
 			prc.pageTable[findvPage(prc.pageTable,prc.allocatedFrames[clk])].used=false;
 		}
 		
@@ -189,7 +181,7 @@ public class KernelFunctions
 				tmpclk=prc.pageTable[tmp].tmStamp;
 				
 			}
-			//prc.pageTable[tmp].count=0;
+			prc.pageTable[tmp].count=0;
 			
 		}
 		//frame to recieve new page
